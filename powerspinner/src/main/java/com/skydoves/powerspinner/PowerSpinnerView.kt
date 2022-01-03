@@ -25,20 +25,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.PopupWindow
-import androidx.annotation.ArrayRes
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import androidx.annotation.MainThread
-import androidx.annotation.Px
-import androidx.annotation.StyleRes
+import androidx.annotation.*
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -197,6 +189,16 @@ class PowerSpinnerView : AppCompatTextView, LifecycleObserver {
     @Px get() = _spinnerPopupElevation
     set(@Px value) {
       _spinnerPopupElevation = value
+      updateSpinnerWindow()
+    }
+
+  @Px private var _spinnerPopupRadius: Int = dp2Px(0)
+
+  /** A corner radius of the spinner popup. */
+  var spinnerPopupRadius: Int
+    @Px get() = _spinnerPopupRadius
+    set(@Px value) {
+      _spinnerPopupRadius = value
       updateSpinnerWindow()
     }
 
@@ -367,6 +369,14 @@ class PowerSpinnerView : AppCompatTextView, LifecycleObserver {
           )
       }
 
+      if (hasValue(R.styleable.PowerSpinnerView_spinner_popup_corner_radius)) {
+        spinnerPopupRadius =
+          getDimensionPixelSize(
+            R.styleable.PowerSpinnerView_spinner_popup_corner_radius,
+            0
+          )
+      }
+
       if (hasValue(R.styleable.PowerSpinnerView_spinner_popup_animation)) {
         spinnerPopupAnimation = when (
           getInteger(
@@ -480,11 +490,12 @@ class PowerSpinnerView : AppCompatTextView, LifecycleObserver {
         }
       }
       binding.body.apply {
-        if (this@PowerSpinnerView.spinnerPopupBackgroundColor == outRangeColor) {
-          background = this@PowerSpinnerView.background
-        } else {
-          setBackgroundColor(this@PowerSpinnerView.spinnerPopupBackgroundColor)
+
+        background = GradientDrawable().apply {
+          setColor(spinnerPopupBackgroundColor)
+          cornerRadius = spinnerPopupRadius.toFloat()
         }
+
         setPadding(
           this.paddingLeft,
           this.paddingTop,

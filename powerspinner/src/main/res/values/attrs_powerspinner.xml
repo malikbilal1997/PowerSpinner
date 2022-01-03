@@ -39,6 +39,8 @@
     <attr name="spinner_popup_animation_style" format="reference" />
     <!-- Sets the width of the popup. -->
     <attr name="spinner_popup_width" format="dimension" />
+    <!-- Sets the corner radius of the popup. -->
+    <attr name="spinner_popup_corner_radius" format="dimension" />
     <!-- Sets the height of the popup. -->
     <attr name="spinner_popup_height" format="dimension" />
     <!-- Sets the elevation size of the popup. -->
